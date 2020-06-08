@@ -2,12 +2,13 @@
 
 module.exports = ' \
 const $__debug__ = async function ($__helpMessage__) { \
-    const $__colors__ = require("colors"); \
-    const $__espree__ = require("espree"); \
-    const $__highlight__ = require("cli-highlight").highlight; \
-    const $__readline__ = require("readline"); \
-    const $__util__ = require("util"); \
-    const $__lodash__ = require("lodash"); \
+    const $__require__ = async $__name__ => global.require ? require($__name__) : (await import($__name__)).default; \
+    const $__colors__ = await $__require__("colors"); \
+    const $__espree__ = await $__require__("espree"); \
+    const $__highlight__ = (await $__require__("cli-highlight")).highlight; \
+    const $__readline__ = await $__require__("readline"); \
+    const $__util__ = await $__require__("util"); \
+    const $__lodash__ = await $__require__("lodash"); \
     const complete = $__line__ => { \
         $__line__ = $__colors__.strip($__line__); \
         const $__tokens__ = $__line__.split(/[^A-Za-z0-9._$]+/).filter(i => i); \
