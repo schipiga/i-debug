@@ -106,7 +106,9 @@ const $__debug__ = async function ($__helpMessage__) { \
                 } \
                 let $__ast__, $__varName__; \
                 try { \
-                    $__ast__ = $__espree__.parse($__answer__, { ecmaVersion: 9 }); \
+                    $__ast__ = $__espree__.parse( \
+                        $__answer__.replace("async ", " ").replace("await ", " "), \
+                        { ecmaVersion: 9 }); \
                     $__varName__ = $__ast__.body[0].expression.left.name; \
                 } catch ($__err__) { \
                     try { \
@@ -128,8 +130,13 @@ const $__debug__ = async function ($__helpMessage__) { \
                 } \
                 Promise \
                     .resolve() \
-                    .then(() => eval($__answer__)) \
-                    .then($__result__ => console.log($__util__.format($__result__).yellow)) \
+                    .then(() => eval(`const $__f__ = async () => { return ${$__answer__}; }; $__f__()`)) \
+                    .then($__result__ => { \
+                        if ($__varName__) { \
+                            global[$__varName__] = $__result__; \
+                        } \
+                        console.log($__util__.format($__result__).yellow); \
+                    }) \
                     .catch($__err__ => console.log($__util__.format($__err__).red)) \
                     .then(() => $__resolve__(false)); \
             }); \
