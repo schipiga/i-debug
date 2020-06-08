@@ -107,13 +107,16 @@ const $__debug__ = async function ($__helpMessage__) { \
                 let $__ast__, $__varName__; \
                 try { \
                     $__ast__ = $__espree__.parse( \
-                        $__answer__.replace("async ", " ").replace("await ", " "), \
-                        { ecmaVersion: 9 }); \
+                        $__answer__.replace("await ", " "), { ecmaVersion: 9 }); \
                     $__varName__ = $__ast__.body[0].expression.left.name; \
                 } catch ($__err__) { \
                     try { \
                         $__varName__ = $__ast__.body[0].declarations[0].id.name; \
-                    } catch ($__e__) { /* nothing */ } \
+                    } catch ($__err__) { \
+                        try { \
+                            $__varName__ = $__ast__.body[0].id.name; \
+                        } catch ($__err__) {} \
+                    } \
                 } \
                 if ($__varName__) { \
                     if ($__answer__.startsWith("let ")) { \
@@ -123,7 +126,11 @@ const $__debug__ = async function ($__helpMessage__) { \
                     } else if ($__answer__.startsWith("const ")) { \
                         $__answer__ = $__answer__.substring(6); \
                     } \
-                    $__answer__ = `global.${$__answer__}`; \
+                    if ($__answer__.match("^(async +)? *function")) { \
+                        $__answer__ = `global.${$__varName__} = ${$__answer__}`; \
+                    } else { \
+                        $__answer__ = `global.${$__answer__}`; \
+                    } \
                     if (!Object.prototype.hasOwnProperty.call($__origGlobals__, $__varName__)) { \
                         $__origGlobals__[$__varName__] = global[$__varName__]; \
                     } \
