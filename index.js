@@ -113,18 +113,22 @@ const $__debug__ = async function ($__helpMessage__) { \
                         $__varName__ = $__ast__.body[0].declarations[0].id.name; \
                     } catch ($__e__) { /* nothing */ } \
                 } \
+                if ($__varName__) { \
+                    if ($__answer__.startsWith("let ")) { \
+                        $__answer__ = $__answer__.substring(4); \
+                    } else if ($__answer__.startsWith("var ")) { \
+                        $__answer__ = $__answer__.substring(4); \
+                    } else if ($__answer__.startsWith("const ")) { \
+                        $__answer__ = $__answer__.substring(6); \
+                    } \
+                    $__answer__ = `global.${$__answer__}`; \
+                    if (!Object.prototype.hasOwnProperty.call($__origGlobals__, $__varName__)) { \
+                        $__origGlobals__[$__varName__] = global[$__varName__]; \
+                    } \
+                } \
                 Promise \
                     .resolve() \
-                    .then(() => { \
-                        const $__result__ = eval($__answer__); \
-                        if ($__varName__) { \
-                            if (!Object.prototype.hasOwnProperty.call($__origGlobals__, $__varName__)) { \
-                                $__origGlobals__[$__varName__] = global[$__varName__]; \
-                            } \
-                            global[$__varName__] = eval($__varName__); \
-                        } \
-                        return $__result__; \
-                    }) \
+                    .then(() => eval($__answer__)) \
                     .then($__result__ => console.log($__util__.format($__result__).yellow)) \
                     .catch($__err__ => console.log($__util__.format($__err__).red)) \
                     .then(() => $__resolve__(false)); \
@@ -132,7 +136,11 @@ const $__debug__ = async function ($__helpMessage__) { \
         }); \
     } \
     for (const [$__key__, $__val__] of Object.entries($__origGlobals__)) { \
-        global[$__key__] = $__val__; \
+        if ($__val__ === undefined) { \
+            delete global[$__key__]; \
+        } else { \
+            global[$__key__] = $__val__; \
+        } \
     } \
 }; \
 $__debug__(); \

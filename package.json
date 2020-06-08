@@ -1,6 +1,6 @@
 {
   "name": "idebugger",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Node.js interactive debugger",
   "main": "index.js",
   "scripts": {
