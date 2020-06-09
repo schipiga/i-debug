@@ -107,7 +107,8 @@ const $__debug__ = async function ($__helpMessage__) { \
                 let $__ast__, $__varName__; \
                 try { \
                     $__ast__ = $__espree__.parse( \
-                        $__answer__.replace("await ", " "), { ecmaVersion: 9 }); \
+                        $__answer__.replace("await ", " ").replace("import(", "require("), \
+                        { ecmaVersion: 9 }); \
                     $__varName__ = $__ast__.body[0].expression.left.name; \
                 } catch ($__err__) { \
                     try { \
@@ -131,7 +132,7 @@ const $__debug__ = async function ($__helpMessage__) { \
                     } else { \
                         $__answer__ = `global.${$__answer__}`; \
                     } \
-                    if (!Object.prototype.hasOwnProperty.call($__origGlobals__, $__varName__)) { \
+                    if (!($__varName__ in $__origGlobals__) && ($__varName__ in global)) { \
                         $__origGlobals__[$__varName__] = global[$__varName__]; \
                     } \
                 } \
@@ -150,11 +151,7 @@ const $__debug__ = async function ($__helpMessage__) { \
         }); \
     } \
     for (const [$__key__, $__val__] of Object.entries($__origGlobals__)) { \
-        if ($__val__ === undefined) { \
-            delete global[$__key__]; \
-        } else { \
-            global[$__key__] = $__val__; \
-        } \
+        global[$__key__] = $__val__; \
     } \
 }; \
 $__debug__(); \
